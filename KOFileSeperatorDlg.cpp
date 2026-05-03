@@ -61,6 +61,8 @@ void CKOFileSeperatorDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_HDR_PATH, m_editHdrPath);
 	DDX_Control(pDX, IDC_EDIT_SRC_PATH, m_editSrcPath);
+	DDX_Control(pDX, IDC_EDIT_EXTRACT_PATH, m_editExtractPath);
+
 }
 
 BEGIN_MESSAGE_MAP(CKOFileSeperatorDlg, CDialogEx)
@@ -70,6 +72,7 @@ BEGIN_MESSAGE_MAP(CKOFileSeperatorDlg, CDialogEx)
 	ON_COMMAND(ID_HELP_ABOUT, &CKOFileSeperatorDlg::OnHelpAbout)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_HDR, &CKOFileSeperatorDlg::OnBnClickedButtonSelectHdr)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_SRC, &CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_EXTRACT_PATH, &CKOFileSeperatorDlg::OnBnClickedButtonSelectExtractPath)
 END_MESSAGE_MAP()
 
 
@@ -195,5 +198,16 @@ void CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc()
 	{
 		CString path = dlg.GetPathName();
 		m_editSrcPath.SetWindowText(path);
+	}
+}
+
+void CKOFileSeperatorDlg::OnBnClickedButtonSelectExtractPath()
+{
+	CFolderPickerDialog dlg;
+
+	if (dlg.DoModal() == IDOK)
+	{
+		CString path = dlg.GetPathName();
+		m_editExtractPath.SetWindowText(path);
 	}
 }

@@ -38,4 +38,5 @@ public:
 	afx_msg void OnHelpAbout();
 	afx_msg void OnBnClickedButtonSelectHdr();
 	afx_msg void OnBnClickedButtonSelectSrc();
+	afx_msg void OnBnClickedButtonSelectExtractPath();
 };
