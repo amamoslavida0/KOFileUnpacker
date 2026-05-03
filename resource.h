@@ -9,8 +9,11 @@
 #define IDR_MAINFRAME                   128
 #define IDR_MENU1                       130
 #define IDC_EDIT1                       1000
+#define IDC_EDIT_HDR_PATH               1000
 #define IDC_EDIT2                       1001
+#define IDC_EDIT_SRC_PATH               1001
 #define IDC_EDIT3                       1002
+#define IDC_EDIT_EXTRACT_PATH           1002
 #define IDC_BUTTON1                     1003
 #define IDC_BUTTON_SELECT_HDR           1003
 #define IDC_BUTTON4                     1004

@@ -59,6 +59,8 @@ CKOFileSeperatorDlg::CKOFileSeperatorDlg(CWnd* pParent /*=nullptr*/)
 void CKOFileSeperatorDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT_HDR_PATH, m_editHdrPath);
+	DDX_Control(pDX, IDC_EDIT_SRC_PATH, m_editSrcPath);
 }
 
 BEGIN_MESSAGE_MAP(CKOFileSeperatorDlg, CDialogEx)
@@ -66,6 +68,8 @@ BEGIN_MESSAGE_MAP(CKOFileSeperatorDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_COMMAND(ID_HELP_ABOUT, &CKOFileSeperatorDlg::OnHelpAbout)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_HDR, &CKOFileSeperatorDlg::OnBnClickedButtonSelectHdr)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_SRC, &CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc)
 END_MESSAGE_MAP()
 
 
@@ -158,4 +162,38 @@ void CKOFileSeperatorDlg::OnHelpAbout()
 {
 	CAboutDlg dlgAbout;
 	dlgAbout.DoModal();
+}
+
+void CKOFileSeperatorDlg::OnBnClickedButtonSelectHdr()
+{
+	CFileDialog dlg(
+		TRUE,
+		NULL,
+		NULL,
+		OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST,
+		L"Header Files (*.hdr)|*.hdr|All Files (*.*)|*.*||"
+	);
+
+	if (dlg.DoModal() == IDOK)
+	{
+		CString path = dlg.GetPathName();
+		m_editHdrPath.SetWindowText(path);
+	}
+}
+
+void CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc()
+{
+	CFileDialog dlg(
+		TRUE,
+		NULL,
+		NULL,
+		OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST,
+		L"Source Files (*.src)|*.src|All Files (*.*)|*.*||"
+	);
+
+	if (dlg.DoModal() == IDOK)
+	{
+		CString path = dlg.GetPathName();
+		m_editSrcPath.SetWindowText(path);
+	}
 }

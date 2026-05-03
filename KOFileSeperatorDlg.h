@@ -25,6 +25,9 @@ public:
 // Implementation
 protected:
 	HICON m_hIcon;
+	CEdit m_editHdrPath;
+	CEdit m_editSrcPath;
+	CEdit m_editExtractPath;
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -33,4 +36,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnHelpAbout();
+	afx_msg void OnBnClickedButtonSelectHdr();
+	afx_msg void OnBnClickedButtonSelectSrc();
 };
