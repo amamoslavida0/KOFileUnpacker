@@ -79,7 +79,7 @@ BEGIN_MESSAGE_MAP(CKOFileSeperatorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_SRC, &CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_EXTRACT_PATH, &CKOFileSeperatorDlg::OnBnClickedButtonSelectExtractPath)
 	ON_BN_CLICKED(IDC_BUTTON_EXTRACT, &CKOFileSeperatorDlg::OnBnClickedButtonExtract)
-	ON_MESSAGE(WM_USER + 1, &CKOFileSeperatorDlg::OnExtractDone)
+	ON_MESSAGE(WM_USER + 1, &CKOFileSeperatorDlg::OnUnpackDone)
 END_MESSAGE_MAP()
 
 
@@ -252,10 +252,10 @@ void CKOFileSeperatorDlg::OnBnClickedButtonExtract()
 	// make button unclickable
 	m_btnExtract.EnableWindow(FALSE);
 	// start thread to avoid UI freeze.
-	AfxBeginThread(ExtractThread, this);
+	AfxBeginThread(UnpackThread, this);
 }
 
-UINT CKOFileSeperatorDlg::ExtractThread(LPVOID pParam)
+UINT CKOFileSeperatorDlg::UnpackThread(LPVOID pParam)
 {
 	CKOFileSeperatorDlg* pDlg = (CKOFileSeperatorDlg*) pParam;
 
@@ -267,7 +267,7 @@ UINT CKOFileSeperatorDlg::ExtractThread(LPVOID pParam)
 	return 0;
 }
 
-LRESULT CKOFileSeperatorDlg::OnExtractDone(WPARAM, LPARAM)
+LRESULT CKOFileSeperatorDlg::OnUnpackDone(WPARAM, LPARAM)
 {
 	m_btnExtract.EnableWindow(TRUE);
 

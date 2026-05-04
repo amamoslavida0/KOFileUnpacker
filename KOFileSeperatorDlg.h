@@ -55,8 +55,8 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	// thread to avoid ui freeze
-	static UINT ExtractThread(LPVOID pParam);
-	LRESULT OnExtractDone(WPARAM, LPARAM);
+	static UINT UnpackThread(LPVOID pParam);
+	LRESULT OnUnpackDone(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 protected:
 	void ReadHdr();

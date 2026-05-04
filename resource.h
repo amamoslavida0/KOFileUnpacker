@@ -23,6 +23,7 @@
 #define IDC_BUTTON_SELECT_HDR           1003
 #define IDC_BUTTON4                     1004
 #define IDC_BUTTON_EXTRACT              1004
+#define IDC_BUTTON_UNPACK               1004
 #define IDC_BUTTON2                     1005
 #define IDC_BUTTON_SELECT_SRC           1005
 #define IDC_BUTTON3                     1006
