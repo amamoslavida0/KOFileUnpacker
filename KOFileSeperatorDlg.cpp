@@ -260,7 +260,7 @@ UINT CKOFileSeperatorDlg::ExtractThread(LPVOID pParam)
 	CKOFileSeperatorDlg* pDlg = (CKOFileSeperatorDlg*) pParam;
 
 	pDlg->ReadHdr();
-	pDlg->SeperateFiles();
+	pDlg->Unpack();
 
 	pDlg->PostMessage(WM_USER + 1); // done signal
 
@@ -338,7 +338,7 @@ void CKOFileSeperatorDlg::ReadHdr()
 	}
 }
 
-void CKOFileSeperatorDlg::SeperateFiles() 
+void CKOFileSeperatorDlg::Unpack() 
 {
 	// progress bar
 	m_progress.ShowWindow(SW_SHOW);

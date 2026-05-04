@@ -60,7 +60,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 protected:
 	void ReadHdr();
-	void SeperateFiles();
+	void Unpack();
 	inline CString GetText(UINT id)
 	{
 		CString str;
