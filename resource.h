@@ -7,6 +7,7 @@
 #define IDS_ABOUTBOX                    101
 #define IDD_KOFILESEPERATOR_DIALOG      102
 #define IDS_SUCCESS_UNPACK              102
+#define IDD_KOFILEUNPACKER_DIALOG       102
 #define IDS_WARNING_1                   103
 #define IDS_WARNING_2                   104
 #define IDS_WARNING_3                   105

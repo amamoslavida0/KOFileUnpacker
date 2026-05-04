@@ -1,27 +1,27 @@
 
-// KOFileSeperator.cpp : Defines the class behaviors for the application.
+// KOFileUnpacker.cpp : Defines the class behaviors for the application.
 //
 
 #include "pch.h"
 #include "framework.h"
-#include "KOFileSeperator.h"
-#include "KOFileSeperatorDlg.h"
+#include "KOFileUnpacker.h"
+#include "KOFileUnpackerDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 
-// CKOFileSeperatorApp
+// CKOFileUnpackerApp
 
-BEGIN_MESSAGE_MAP(CKOFileSeperatorApp, CWinApp)
+BEGIN_MESSAGE_MAP(CKOFileUnpackerApp, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
 
-// CKOFileSeperatorApp construction
+// CKOFileUnpackerApp construction
 
-CKOFileSeperatorApp::CKOFileSeperatorApp()
+CKOFileUnpackerApp::CKOFileUnpackerApp()
 {
 	// support Restart Manager
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
@@ -33,12 +33,12 @@ CKOFileSeperatorApp::CKOFileSeperatorApp()
 
 // The one and only CKOFileSeperatorApp object
 
-CKOFileSeperatorApp theApp;
+CKOFileUnpackerApp theApp;
 
 
-// CKOFileSeperatorApp initialization
+// CKOFileUnpackerApp initialization
 
-BOOL CKOFileSeperatorApp::InitInstance()
+BOOL CKOFileUnpackerApp::InitInstance()
 {
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
@@ -71,7 +71,7 @@ BOOL CKOFileSeperatorApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-	CKOFileSeperatorDlg dlg;
+	CKOFileUnpackerDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

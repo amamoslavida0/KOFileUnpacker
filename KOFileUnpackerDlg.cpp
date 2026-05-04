@@ -4,8 +4,8 @@
 
 #include "pch.h"
 #include "framework.h"
-#include "KOFileSeperator.h"
-#include "KOFileSeperatorDlg.h"
+#include "KOFileUnpacker.h"
+#include "KOFileUnpackerDlg.h"
 #include "afxdialogex.h"
 
 #ifdef _DEBUG
@@ -50,7 +50,7 @@ END_MESSAGE_MAP()
 
 
 
-CKOFileSeperatorDlg::CKOFileSeperatorDlg(CWnd* pParent /*=nullptr*/)
+CKOFileUnpackerDlg::CKOFileUnpackerDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_KOFILESEPERATOR_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -60,7 +60,7 @@ CKOFileSeperatorDlg::CKOFileSeperatorDlg(CWnd* pParent /*=nullptr*/)
 	m_strPathUnpack = L"";
 }
 
-void CKOFileSeperatorDlg::DoDataExchange(CDataExchange* pDX)
+void CKOFileUnpackerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_HDR_PATH, m_editHdrPath);
@@ -70,22 +70,22 @@ void CKOFileSeperatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_EXTRACT, m_btnUnpack);
 }
 
-BEGIN_MESSAGE_MAP(CKOFileSeperatorDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CKOFileUnpackerDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_COMMAND(ID_HELP_ABOUT, &CKOFileSeperatorDlg::OnHelpAbout)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_HDR, &CKOFileSeperatorDlg::OnBnClickedButtonSelectHdr)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_SRC, &CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_EXTRACT_PATH, &CKOFileSeperatorDlg::OnBnClickedButtonSelectUnpackPath)
-	ON_BN_CLICKED(IDC_BUTTON_EXTRACT, &CKOFileSeperatorDlg::OnBnClickedButtonUnpack)
-	ON_MESSAGE(WM_USER + 1, &CKOFileSeperatorDlg::OnUnpackDone)
+	ON_COMMAND(ID_HELP_ABOUT, &CKOFileUnpackerDlg::OnHelpAbout)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_HDR, &CKOFileUnpackerDlg::OnBnClickedButtonSelectHdr)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_SRC, &CKOFileUnpackerDlg::OnBnClickedButtonSelectSrc)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_EXTRACT_PATH, &CKOFileUnpackerDlg::OnBnClickedButtonSelectUnpackPath)
+	ON_BN_CLICKED(IDC_BUTTON_EXTRACT, &CKOFileUnpackerDlg::OnBnClickedButtonUnpack)
+	ON_MESSAGE(WM_USER + 1, &CKOFileUnpackerDlg::OnUnpackDone)
 END_MESSAGE_MAP()
 
 
 // CKOFileSeperatorDlg message handlers
 
-BOOL CKOFileSeperatorDlg::OnInitDialog()
+BOOL CKOFileUnpackerDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 	// Add "About..." menu item to system menu.
@@ -120,7 +120,7 @@ BOOL CKOFileSeperatorDlg::OnInitDialog()
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CKOFileSeperatorDlg::OnSysCommand(UINT nID, LPARAM lParam)
+void CKOFileUnpackerDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
@@ -137,7 +137,7 @@ void CKOFileSeperatorDlg::OnSysCommand(UINT nID, LPARAM lParam)
 //  to draw the icon.  For MFC applications using the document/view model,
 //  this is automatically done for you by the framework.
 
-void CKOFileSeperatorDlg::OnPaint()
+void CKOFileUnpackerDlg::OnPaint()
 {
 	if (IsIconic())
 	{
@@ -164,19 +164,19 @@ void CKOFileSeperatorDlg::OnPaint()
 
 // The system calls this function to obtain the cursor to display while the user drags
 //  the minimized window.
-HCURSOR CKOFileSeperatorDlg::OnQueryDragIcon()
+HCURSOR CKOFileUnpackerDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
 
-void CKOFileSeperatorDlg::OnHelpAbout()
+void CKOFileUnpackerDlg::OnHelpAbout()
 {
 	CAboutDlg dlgAbout;
 	dlgAbout.DoModal();
 }
 
-void CKOFileSeperatorDlg::OnBnClickedButtonSelectHdr()
+void CKOFileUnpackerDlg::OnBnClickedButtonSelectHdr()
 {
 	CFileDialog dlg(
 		TRUE,
@@ -193,7 +193,7 @@ void CKOFileSeperatorDlg::OnBnClickedButtonSelectHdr()
 	}
 }
 
-void CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc()
+void CKOFileUnpackerDlg::OnBnClickedButtonSelectSrc()
 {
 	CFileDialog dlg(
 		TRUE,
@@ -210,7 +210,7 @@ void CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc()
 	}
 }
 
-void CKOFileSeperatorDlg::OnBnClickedButtonSelectUnpackPath()
+void CKOFileUnpackerDlg::OnBnClickedButtonSelectUnpackPath()
 {
 	CFolderPickerDialog dlg;
 
@@ -221,7 +221,7 @@ void CKOFileSeperatorDlg::OnBnClickedButtonSelectUnpackPath()
 	}
 }
 
-void CKOFileSeperatorDlg::OnBnClickedButtonUnpack()
+void CKOFileUnpackerDlg::OnBnClickedButtonUnpack()
 {
 	m_editHdrPath.GetWindowText(m_strPathHdr);
 	m_editSrcPath.GetWindowText(m_strPathSrc);
@@ -255,9 +255,9 @@ void CKOFileSeperatorDlg::OnBnClickedButtonUnpack()
 	AfxBeginThread(UnpackThread, this);
 }
 
-UINT CKOFileSeperatorDlg::UnpackThread(LPVOID pParam)
+UINT CKOFileUnpackerDlg::UnpackThread(LPVOID pParam)
 {
-	CKOFileSeperatorDlg* pDlg = (CKOFileSeperatorDlg*) pParam;
+	CKOFileUnpackerDlg* pDlg = (CKOFileUnpackerDlg*) pParam;
 
 	pDlg->ReadHdr();
 	pDlg->Unpack();
@@ -267,7 +267,7 @@ UINT CKOFileSeperatorDlg::UnpackThread(LPVOID pParam)
 	return 0;
 }
 
-LRESULT CKOFileSeperatorDlg::OnUnpackDone(WPARAM, LPARAM)
+LRESULT CKOFileUnpackerDlg::OnUnpackDone(WPARAM, LPARAM)
 {
 	m_btnUnpack.EnableWindow(TRUE);
 
@@ -276,7 +276,7 @@ LRESULT CKOFileSeperatorDlg::OnUnpackDone(WPARAM, LPARAM)
 	return 0;
 }
 
-void CKOFileSeperatorDlg::ReadHdr() 
+void CKOFileUnpackerDlg::ReadHdr()
 {
 
 	HANDLE hFile = CreateFile(
@@ -340,7 +340,7 @@ void CKOFileSeperatorDlg::ReadHdr()
 #endif
 }
 
-void CKOFileSeperatorDlg::Unpack() 
+void CKOFileUnpackerDlg::Unpack()
 {
 	// progress bar
 	m_progress.ShowWindow(SW_SHOW);

@@ -1,5 +1,5 @@
 
-// KOFileSeperator.h : main header file for the PROJECT_NAME application
+// KOFileUnpacker.h : main header file for the PROJECT_NAME application
 //
 
 #pragma once
@@ -11,14 +11,14 @@
 #include "resource.h"		// main symbols
 
 
-// CKOFileSeperatorApp:
-// See KOFileSeperator.cpp for the implementation of this class
+// CKOFileUnpackerApp:
+// See KOFileUnpacker.cpp for the implementation of this class
 //
 
-class CKOFileSeperatorApp : public CWinApp
+class CKOFileUnpackerApp : public CWinApp
 {
 public:
-	CKOFileSeperatorApp();
+	CKOFileUnpackerApp();
 
 // Overrides
 public:
@@ -29,4 +29,4 @@ public:
 	DECLARE_MESSAGE_MAP()
 };
 
-extern CKOFileSeperatorApp theApp;
+extern CKOFileUnpackerApp theApp;

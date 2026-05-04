@@ -1,5 +1,5 @@
 ﻿
-// KOFileSeperatorDlg.h : header file
+// KOFileUnpackerDlg.h : header file
 //
 
 #pragma once
@@ -20,12 +20,12 @@ struct file_info
 	{}
 };
 
-// CKOFileSeperatorDlg dialog
-class CKOFileSeperatorDlg : public CDialogEx
+// CKOFileUnpackerDlg dialog
+class CKOFileUnpackerDlg : public CDialogEx
 {
 // Construction
 public:
-	CKOFileSeperatorDlg(CWnd* pParent = nullptr);	// standard constructor
+	CKOFileUnpackerDlg(CWnd* pParent = nullptr);	// standard constructor
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME

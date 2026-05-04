@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KOFileSeperator.h">
+    <ClInclude Include="KOFileUnpacker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KOFileSeperatorDlg.h">
+    <ClInclude Include="KOFileUnpackerDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
@@ -35,10 +35,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KOFileSeperator.cpp">
+    <ClCompile Include="KOFileUnpacker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KOFileSeperatorDlg.cpp">
+    <ClCompile Include="KOFileUnpackerDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
