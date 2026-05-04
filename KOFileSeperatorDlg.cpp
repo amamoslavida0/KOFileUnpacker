@@ -77,8 +77,8 @@ BEGIN_MESSAGE_MAP(CKOFileSeperatorDlg, CDialogEx)
 	ON_COMMAND(ID_HELP_ABOUT, &CKOFileSeperatorDlg::OnHelpAbout)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_HDR, &CKOFileSeperatorDlg::OnBnClickedButtonSelectHdr)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_SRC, &CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_EXTRACT_PATH, &CKOFileSeperatorDlg::OnBnClickedButtonSelectExtractPath)
-	ON_BN_CLICKED(IDC_BUTTON_EXTRACT, &CKOFileSeperatorDlg::OnBnClickedButtonExtract)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_EXTRACT_PATH, &CKOFileSeperatorDlg::OnBnClickedButtonSelectUnpackPath)
+	ON_BN_CLICKED(IDC_BUTTON_EXTRACT, &CKOFileSeperatorDlg::OnBnClickedButtonUnpack)
 	ON_MESSAGE(WM_USER + 1, &CKOFileSeperatorDlg::OnUnpackDone)
 END_MESSAGE_MAP()
 
@@ -210,7 +210,7 @@ void CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc()
 	}
 }
 
-void CKOFileSeperatorDlg::OnBnClickedButtonSelectExtractPath()
+void CKOFileSeperatorDlg::OnBnClickedButtonSelectUnpackPath()
 {
 	CFolderPickerDialog dlg;
 
@@ -221,7 +221,7 @@ void CKOFileSeperatorDlg::OnBnClickedButtonSelectExtractPath()
 	}
 }
 
-void CKOFileSeperatorDlg::OnBnClickedButtonExtract()
+void CKOFileSeperatorDlg::OnBnClickedButtonUnpack()
 {
 	m_editHdrPath.GetWindowText(m_strPathHdr);
 	m_editSrcPath.GetWindowText(m_strPathSrc);

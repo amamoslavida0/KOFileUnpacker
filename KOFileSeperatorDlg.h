@@ -61,7 +61,7 @@ protected:
 protected:
 	void ReadHdr();
 	void Unpack();
-	inline CString GetText(UINT id)
+	inline CString GetText(UINT id) const
 	{
 		CString str;
 		str.LoadString(id);
@@ -71,6 +71,6 @@ public:
 	afx_msg void OnHelpAbout();
 	afx_msg void OnBnClickedButtonSelectHdr();
 	afx_msg void OnBnClickedButtonSelectSrc();
-	afx_msg void OnBnClickedButtonSelectExtractPath();
-	afx_msg void OnBnClickedButtonExtract();
+	afx_msg void OnBnClickedButtonSelectUnpackPath();
+	afx_msg void OnBnClickedButtonUnpack();
 };
