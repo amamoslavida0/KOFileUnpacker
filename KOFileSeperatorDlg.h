@@ -61,6 +61,12 @@ protected:
 protected:
 	void ReadHdr();
 	void SeperateFiles();
+	inline CString GetText(UINT id)
+	{
+		CString str;
+		str.LoadString(id);
+		return str;
+	}
 public:
 	afx_msg void OnHelpAbout();
 	afx_msg void OnBnClickedButtonSelectHdr();

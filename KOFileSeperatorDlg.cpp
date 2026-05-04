@@ -227,15 +227,31 @@ void CKOFileSeperatorDlg::OnBnClickedButtonExtract()
 	m_editSrcPath.GetWindowText(m_strPathSrc);
 	m_editExtractPath.GetWindowText(m_strPathExtract);
 
-	if (m_strPathHdr.IsEmpty()
-		|| m_strPathSrc.IsEmpty()
-		|| m_strPathExtract.IsEmpty())
+	CString strError = L"";
+	if (m_strPathHdr.IsEmpty())
 	{
-		AfxMessageBox(L"At least one of the paths are missing.", MB_OK);
+		strError += GetText(IDS_WARNING_1) + L"\r\n";
+	}
+
+	if (m_strPathSrc.IsEmpty())
+	{
+		strError += GetText(IDS_WARNING_2) + L"\r\n";
+	}
+
+	if (m_strPathExtract.IsEmpty())
+	{
+		strError += GetText(IDS_WARNING_3) + L"\r\n";
+	}
+
+	if (strError.IsEmpty() == false)
+	{
+		AfxMessageBox(strError, MB_OK);
 		return;
 	}
 
+	// make button unclickable
 	m_btnExtract.EnableWindow(FALSE);
+	// start thread to avoid UI freeze.
 	AfxBeginThread(ExtractThread, this);
 }
 
@@ -255,7 +271,7 @@ LRESULT CKOFileSeperatorDlg::OnExtractDone(WPARAM, LPARAM)
 {
 	m_btnExtract.EnableWindow(TRUE);
 
-	AfxMessageBox(L"Files separated successfully", MB_OK | MB_ICONINFORMATION);
+	AfxMessageBox(GetText(IDS_SUCCESS_UNPACK), MB_OK | MB_ICONINFORMATION);
 
 	return 0;
 }
@@ -320,7 +336,6 @@ void CKOFileSeperatorDlg::ReadHdr()
 			fileInfo.dwOffset,
 			fileInfo.dwBytes);
 	}
-
 }
 
 void CKOFileSeperatorDlg::SeperateFiles() 
@@ -340,11 +355,11 @@ void CKOFileSeperatorDlg::SeperateFiles()
 		NULL
 	);
 
-	DWORD err = GetLastError();
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
+		DWORD err = GetLastError();
 		CString msg;
-		msg.Format(L"CreateFile failed! Error: %lu", err);
+		msg.Format(GetText(IDS_WARNING_4), err);
 		AfxMessageBox(msg);
 		return;
 	}
