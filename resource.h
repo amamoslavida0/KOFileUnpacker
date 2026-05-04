@@ -22,6 +22,7 @@
 #define IDC_BUTTON_SELECT_SRC           1005
 #define IDC_BUTTON3                     1006
 #define IDC_BUTTON_SELECT_EXTRACT_PATH  1006
+#define IDC_PROGRESS1                   1007
 #define ID_HELP_ABOUT                   32771
 #define ID_HELP_HOWTOUSE                32772
 
@@ -31,7 +32,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1005
+#define _APS_NEXT_CONTROL_VALUE         1008
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

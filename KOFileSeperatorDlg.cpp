@@ -54,6 +54,10 @@ CKOFileSeperatorDlg::CKOFileSeperatorDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_KOFILESEPERATOR_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
+	m_strPathSrc = L"";
+	m_strPathHdr = L"";
+	m_strPathExtract = L"";
 }
 
 void CKOFileSeperatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -62,7 +66,8 @@ void CKOFileSeperatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_HDR_PATH, m_editHdrPath);
 	DDX_Control(pDX, IDC_EDIT_SRC_PATH, m_editSrcPath);
 	DDX_Control(pDX, IDC_EDIT_EXTRACT_PATH, m_editExtractPath);
-
+	DDX_Control(pDX, IDC_PROGRESS1, m_progress);
+	DDX_Control(pDX, IDC_BUTTON_EXTRACT, m_btnExtract);
 }
 
 BEGIN_MESSAGE_MAP(CKOFileSeperatorDlg, CDialogEx)
@@ -73,6 +78,8 @@ BEGIN_MESSAGE_MAP(CKOFileSeperatorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_HDR, &CKOFileSeperatorDlg::OnBnClickedButtonSelectHdr)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_SRC, &CKOFileSeperatorDlg::OnBnClickedButtonSelectSrc)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_EXTRACT_PATH, &CKOFileSeperatorDlg::OnBnClickedButtonSelectExtractPath)
+	ON_BN_CLICKED(IDC_BUTTON_EXTRACT, &CKOFileSeperatorDlg::OnBnClickedButtonExtract)
+	ON_MESSAGE(WM_USER + 1, &CKOFileSeperatorDlg::OnExtractDone)
 END_MESSAGE_MAP()
 
 
@@ -107,6 +114,8 @@ BOOL CKOFileSeperatorDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	// hide progressbar at the start
+	m_progress.ShowWindow(SW_HIDE);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -210,4 +219,167 @@ void CKOFileSeperatorDlg::OnBnClickedButtonSelectExtractPath()
 		CString path = dlg.GetPathName();
 		m_editExtractPath.SetWindowText(path);
 	}
+}
+
+void CKOFileSeperatorDlg::OnBnClickedButtonExtract()
+{
+	m_editHdrPath.GetWindowText(m_strPathHdr);
+	m_editSrcPath.GetWindowText(m_strPathSrc);
+	m_editExtractPath.GetWindowText(m_strPathExtract);
+
+	if (m_strPathHdr.IsEmpty()
+		|| m_strPathSrc.IsEmpty()
+		|| m_strPathExtract.IsEmpty())
+	{
+		AfxMessageBox(L"At least one of the paths are missing.", MB_OK);
+		return;
+	}
+
+	m_btnExtract.EnableWindow(FALSE);
+	AfxBeginThread(ExtractThread, this);
+}
+
+UINT CKOFileSeperatorDlg::ExtractThread(LPVOID pParam)
+{
+	CKOFileSeperatorDlg* pDlg = (CKOFileSeperatorDlg*) pParam;
+
+	pDlg->ReadHdr();
+	pDlg->SeperateFiles();
+
+	pDlg->PostMessage(WM_USER + 1); // done signal
+
+	return 0;
+}
+
+LRESULT CKOFileSeperatorDlg::OnExtractDone(WPARAM, LPARAM)
+{
+	m_btnExtract.EnableWindow(TRUE);
+
+	AfxMessageBox(L"Files separated successfully", MB_OK | MB_ICONINFORMATION);
+
+	return 0;
+}
+
+void CKOFileSeperatorDlg::ReadHdr() 
+{
+
+	HANDLE hFile = CreateFile(
+		m_strPathHdr,
+		GENERIC_READ,
+		FILE_SHARE_READ,
+		NULL,
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL,
+		NULL
+	);
+
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		uint32_t dwHeader = 0;
+		uint32_t dwUnknown = 0;
+		DWORD bytesRead = 0;
+		
+		// read only once
+		ReadFile(hFile, &dwHeader, sizeof(uint32_t), &bytesRead, NULL);
+		ReadFile(hFile, &dwUnknown, sizeof(uint32_t), &bytesRead, NULL);
+
+		while (true)
+		{
+			file_info fileInfo;
+
+			if (!ReadFile(hFile, &fileInfo.wLenFN, sizeof(uint16_t), &bytesRead, NULL)
+				|| bytesRead != sizeof(uint16_t))
+			{
+				break;
+			}
+
+			if (fileInfo.wLenFN > 0)
+			{
+				std::vector<char> buf(fileInfo.wLenFN + 1, 0);
+
+				ReadFile(hFile, buf.data(), fileInfo.wLenFN, &bytesRead, NULL);
+
+				fileInfo.strFN = CString(buf.data());
+			}
+
+			ReadFile(hFile, &fileInfo.dwOffset, sizeof(uint32_t), &bytesRead, NULL);
+			ReadFile(hFile, &fileInfo.dwBytes, sizeof(uint32_t), &bytesRead, NULL);
+
+			m_vecFileInfo.push_back(fileInfo);
+		}
+
+
+		CloseHandle(hFile);
+	}
+
+	for (const auto& fileInfo : m_vecFileInfo)
+	{
+		TRACE(L"FileName: %s | Len : %hu | Offset : %u | Bytes : %u\n",
+			fileInfo.strFN.GetString(),
+			fileInfo.wLenFN,
+			fileInfo.dwOffset,
+			fileInfo.dwBytes);
+	}
+
+}
+
+void CKOFileSeperatorDlg::SeperateFiles() 
+{
+	// progress bar
+	m_progress.ShowWindow(SW_SHOW);
+	m_progress.SetRange(0, (int) m_vecFileInfo.size());
+	m_progress.SetPos(0);
+
+	HANDLE hFile = CreateFile(
+		m_strPathSrc,
+		GENERIC_READ,
+		FILE_SHARE_READ,
+		NULL,
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL,
+		NULL
+	);
+
+	DWORD err = GetLastError();
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		CString msg;
+		msg.Format(L"CreateFile failed! Error: %lu", err);
+		AfxMessageBox(msg);
+		return;
+	}
+
+	DWORD bytesRead = 0;
+
+	int iCount = 0;
+	for (const auto& fileInfo : m_vecFileInfo)
+	{
+		CString strPathOut;
+		strPathOut.Format(L"%s\\%s", m_strPathExtract, fileInfo.strFN.GetString());
+		HANDLE hOut = CreateFile(
+			strPathOut,
+			GENERIC_WRITE,
+			0,
+			NULL,
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
+			NULL
+		);
+
+		if (hOut == INVALID_HANDLE_VALUE) 
+		{
+			continue;
+		}
+
+		SetFilePointer(hFile, fileInfo.dwOffset, NULL, FILE_BEGIN);
+		std::vector<char> buffer(fileInfo.dwBytes);
+		ReadFile(hFile, buffer.data(), fileInfo.dwBytes, &bytesRead, NULL);
+		DWORD bytesWritten = 0;
+		WriteFile(hOut, buffer.data(), bytesRead, &bytesWritten, NULL);
+		CloseHandle(hOut);
+		m_progress.SetPos(++iCount);
+	}
+
+	m_progress.ShowWindow(SW_HIDE);
+	CloseHandle(hFile);
 }
