@@ -328,6 +328,7 @@ void CKOFileSeperatorDlg::ReadHdr()
 		CloseHandle(hFile);
 	}
 
+#ifdef _DEBUG
 	for (const auto& fileInfo : m_vecFileInfo)
 	{
 		TRACE(L"FileName: %s | Len : %hu | Offset : %u | Bytes : %u\n",
@@ -336,6 +337,7 @@ void CKOFileSeperatorDlg::ReadHdr()
 			fileInfo.dwOffset,
 			fileInfo.dwBytes);
 	}
+#endif
 }
 
 void CKOFileSeperatorDlg::Unpack() 
