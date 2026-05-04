@@ -42,12 +42,12 @@ protected:
 	HICON m_hIcon;
 	CEdit m_editHdrPath;
 	CEdit m_editSrcPath;
-	CEdit m_editExtractPath;
+	CEdit m_editUnpackPath;
 	CString m_strPathSrc;
 	CString m_strPathHdr;
-	CString m_strPathExtract;
+	CString m_strPathUnpack;
 	CProgressCtrl m_progress;
-	CButton m_btnExtract;
+	CButton m_btnUnpack;
 	std::vector<file_info> m_vecFileInfo;
 	// Generated message map functions
 	virtual BOOL OnInitDialog();

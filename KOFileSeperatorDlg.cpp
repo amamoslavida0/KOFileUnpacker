@@ -57,7 +57,7 @@ CKOFileSeperatorDlg::CKOFileSeperatorDlg(CWnd* pParent /*=nullptr*/)
 
 	m_strPathSrc = L"";
 	m_strPathHdr = L"";
-	m_strPathExtract = L"";
+	m_strPathUnpack = L"";
 }
 
 void CKOFileSeperatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -65,9 +65,9 @@ void CKOFileSeperatorDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_HDR_PATH, m_editHdrPath);
 	DDX_Control(pDX, IDC_EDIT_SRC_PATH, m_editSrcPath);
-	DDX_Control(pDX, IDC_EDIT_EXTRACT_PATH, m_editExtractPath);
+	DDX_Control(pDX, IDC_EDIT_EXTRACT_PATH, m_editUnpackPath);
 	DDX_Control(pDX, IDC_PROGRESS1, m_progress);
-	DDX_Control(pDX, IDC_BUTTON_EXTRACT, m_btnExtract);
+	DDX_Control(pDX, IDC_BUTTON_EXTRACT, m_btnUnpack);
 }
 
 BEGIN_MESSAGE_MAP(CKOFileSeperatorDlg, CDialogEx)
@@ -217,7 +217,7 @@ void CKOFileSeperatorDlg::OnBnClickedButtonSelectUnpackPath()
 	if (dlg.DoModal() == IDOK)
 	{
 		CString path = dlg.GetPathName();
-		m_editExtractPath.SetWindowText(path);
+		m_editUnpackPath.SetWindowText(path);
 	}
 }
 
@@ -225,7 +225,7 @@ void CKOFileSeperatorDlg::OnBnClickedButtonUnpack()
 {
 	m_editHdrPath.GetWindowText(m_strPathHdr);
 	m_editSrcPath.GetWindowText(m_strPathSrc);
-	m_editExtractPath.GetWindowText(m_strPathExtract);
+	m_editUnpackPath.GetWindowText(m_strPathUnpack);
 
 	CString strError = L"";
 	if (m_strPathHdr.IsEmpty())
@@ -238,7 +238,7 @@ void CKOFileSeperatorDlg::OnBnClickedButtonUnpack()
 		strError += GetText(IDS_WARNING_2) + L"\r\n";
 	}
 
-	if (m_strPathExtract.IsEmpty())
+	if (m_strPathUnpack.IsEmpty())
 	{
 		strError += GetText(IDS_WARNING_3) + L"\r\n";
 	}
@@ -250,7 +250,7 @@ void CKOFileSeperatorDlg::OnBnClickedButtonUnpack()
 	}
 
 	// make button unclickable
-	m_btnExtract.EnableWindow(FALSE);
+	m_btnUnpack.EnableWindow(FALSE);
 	// start thread to avoid UI freeze.
 	AfxBeginThread(UnpackThread, this);
 }
@@ -269,7 +269,7 @@ UINT CKOFileSeperatorDlg::UnpackThread(LPVOID pParam)
 
 LRESULT CKOFileSeperatorDlg::OnUnpackDone(WPARAM, LPARAM)
 {
-	m_btnExtract.EnableWindow(TRUE);
+	m_btnUnpack.EnableWindow(TRUE);
 
 	AfxMessageBox(GetText(IDS_SUCCESS_UNPACK), MB_OK | MB_ICONINFORMATION);
 
@@ -372,7 +372,7 @@ void CKOFileSeperatorDlg::Unpack()
 	for (const auto& fileInfo : m_vecFileInfo)
 	{
 		CString strPathOut;
-		strPathOut.Format(L"%s\\%s", m_strPathExtract, fileInfo.strFN.GetString());
+		strPathOut.Format(L"%s\\%s", m_strPathUnpack, fileInfo.strFN.GetString());
 		HANDLE hOut = CreateFile(
 			strPathOut,
 			GENERIC_WRITE,
