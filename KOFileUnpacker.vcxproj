@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <ProjectGuid>{9E49AE32-5AD8-7035-1B86-C61987499A22}</ProjectGuid>
     <Keyword>MFCProj</Keyword>
-    <RootNamespace>KOFileSeperator</RootNamespace>
+    <RootNamespace>KOFileUnpacker</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>KOFileUnpacker</ProjectName>
   </PropertyGroup>
@@ -206,13 +206,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="KOFileSeperator.rc" />
+    <ResourceCompile Include="KOFileUnpacker.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\KOFileSeperator.rc2" />
+    <None Include="res\KOFileUnpacker.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\KOFileSeperator.ico" />
+    <Image Include="res\KOFileUnpacker.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
