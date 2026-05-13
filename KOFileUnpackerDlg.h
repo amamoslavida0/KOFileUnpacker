@@ -5,20 +5,8 @@
 #pragma once
 #include <vector>
 
-struct file_info
-{
-	uint16_t wLenFN;
-	CString strFN;
-	uint32_t dwOffset;
-	uint32_t dwBytes;
-
-	file_info() 
-		: wLenFN(0)
-		, strFN(L"")
-		, dwOffset(0)
-		, dwBytes(0)
-	{}
-};
+class CTabPack;
+class CTabUnpack;
 
 // CKOFileUnpackerDlg dialog
 class CKOFileUnpackerDlg : public CDialogEx
@@ -26,7 +14,7 @@ class CKOFileUnpackerDlg : public CDialogEx
 // Construction
 public:
 	CKOFileUnpackerDlg(CWnd* pParent = nullptr);	// standard constructor
-
+	~CKOFileUnpackerDlg();
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_KOFILESEPERATOR_DIALOG
@@ -40,37 +28,52 @@ public:
 // Implementation
 protected:
 	HICON m_hIcon;
-	CEdit m_editHdrPath;
-	CEdit m_editSrcPath;
-	CEdit m_editUnpackPath;
-	CString m_strPathSrc;
-	CString m_strPathHdr;
-	CString m_strPathUnpack;
-	CProgressCtrl m_progress;
-	CButton m_btnUnpack;
-	std::vector<file_info> m_vecFileInfo;
+	// tab control
+	CTabCtrl m_tabMain;
+	// tab pages, dialogs
+	CTabUnpack* m_tabUnpackDlg;
+	CTabPack* m_tabPackDlg;
+
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
-	// thread to avoid ui freeze
-	static UINT UnpackThread(LPVOID pParam);
-	LRESULT OnUnpackDone(WPARAM, LPARAM);
-	DECLARE_MESSAGE_MAP()
-protected:
-	void ReadHdr();
-	void Unpack();
-	inline CString GetText(UINT id) const
-	{
-		CString str;
-		str.LoadString(id);
-		return str;
-	}
+	afx_msg void OnDestroy();
+	DECLARE_MESSAGE_MAP()	
 public:
+	// store paths to pass data while packing
+	CString m_PathSrc;
+	CString m_PathHdr;
+	CString m_PathUnpack;
+
+	inline void SetSrcPath(const CString& str) 
+	{
+		m_PathSrc = str;
+	}
+	inline CString& GetSrcPath() 
+	{
+		return m_PathSrc;
+	}
+
+	inline void SetHdrPath(const CString& str) 
+	{
+		m_PathHdr = str;
+	}
+	inline CString& SetHdrPath()
+	{
+		return m_PathHdr;
+	}
+
+	inline void SetUnpackPath(const CString& str) 
+	{
+		m_PathUnpack = str;
+	}
+	inline CString& SetUnpackPath()
+	{
+		return m_PathUnpack;
+	}
+
 	afx_msg void OnHelpAbout();
-	afx_msg void OnBnClickedButtonSelectHdr();
-	afx_msg void OnBnClickedButtonSelectSrc();
-	afx_msg void OnBnClickedButtonSelectUnpackPath();
-	afx_msg void OnBnClickedButtonUnpack();
+	afx_msg void OnTcnSelchangeTabPages(NMHDR* pNMHDR, LRESULT* pResult);
 };

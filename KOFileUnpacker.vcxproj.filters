@@ -33,6 +33,12 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CTabUnpack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabPack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KOFileUnpacker.cpp">
@@ -44,19 +50,25 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CTabUnpack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabPack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="KOFileSeperator.rc">
+    <ResourceCompile Include="KOFileUnpacker.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\KOFileSeperator.rc2">
+    <None Include="res\KOFileUnpacker.rc2">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\KOFileSeperator.ico">
+    <Image Include="res\KOFileUnpacker.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

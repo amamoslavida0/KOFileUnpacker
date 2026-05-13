@@ -7,6 +7,8 @@
 #include "KOFileUnpacker.h"
 #include "KOFileUnpackerDlg.h"
 #include "afxdialogex.h"
+#include "CTabUnpack.h"
+#include "CTabPack.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,19 +57,21 @@ CKOFileUnpackerDlg::CKOFileUnpackerDlg(CWnd* pParent /*=nullptr*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
-	m_strPathSrc = L"";
-	m_strPathHdr = L"";
-	m_strPathUnpack = L"";
+	m_PathSrc = L"";
+	m_PathHdr = L"";
+	m_PathUnpack = L"";
+	m_tabUnpackDlg = new CTabUnpack;
+	m_tabPackDlg = new CTabPack;
+}
+
+CKOFileUnpackerDlg::~CKOFileUnpackerDlg()
+{
 }
 
 void CKOFileUnpackerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDIT_HDR_PATH, m_editHdrPath);
-	DDX_Control(pDX, IDC_EDIT_SRC_PATH, m_editSrcPath);
-	DDX_Control(pDX, IDC_EDIT_EXTRACT_PATH, m_editUnpackPath);
-	DDX_Control(pDX, IDC_PROGRESS1, m_progress);
-	DDX_Control(pDX, IDC_BUTTON_EXTRACT, m_btnUnpack);
+	DDX_Control(pDX, IDC_TAB_PAGES, m_tabMain);	
 }
 
 BEGIN_MESSAGE_MAP(CKOFileUnpackerDlg, CDialogEx)
@@ -75,11 +79,8 @@ BEGIN_MESSAGE_MAP(CKOFileUnpackerDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_COMMAND(ID_HELP_ABOUT, &CKOFileUnpackerDlg::OnHelpAbout)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_HDR, &CKOFileUnpackerDlg::OnBnClickedButtonSelectHdr)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_SRC, &CKOFileUnpackerDlg::OnBnClickedButtonSelectSrc)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_EXTRACT_PATH, &CKOFileUnpackerDlg::OnBnClickedButtonSelectUnpackPath)
-	ON_BN_CLICKED(IDC_BUTTON_EXTRACT, &CKOFileUnpackerDlg::OnBnClickedButtonUnpack)
-	ON_MESSAGE(WM_USER + 1, &CKOFileUnpackerDlg::OnUnpackDone)
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_PAGES, &CKOFileUnpackerDlg::OnTcnSelchangeTabPages)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -113,11 +114,53 @@ BOOL CKOFileUnpackerDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-	// TODO: Add extra initialization here
+	// Add extra initialization here
 	// hide progressbar at the start
-	m_progress.ShowWindow(SW_HIDE);
 
-	return TRUE;  // return TRUE  unless you set the focus to a control
+	// display page names on tabctrl
+	m_tabMain.InsertItem(0, L"Unpack");
+	m_tabMain.InsertItem(1, L"Pack");
+
+	// display unpack page as default at the opening
+	m_tabUnpackDlg->Create(IDD_DIALOG_TAB_UNPACK, &m_tabMain);
+	m_tabUnpackDlg->m_pMainDlg = this;
+
+	m_tabPackDlg->Create(IDD_DIALOG_TAB_PACK, &m_tabMain);
+	CRect rc;
+	m_tabMain.GetClientRect(&rc);
+	// tab header offset
+	rc.top += 20;
+
+	m_tabUnpackDlg->MoveWindow(&rc);
+	m_tabPackDlg->MoveWindow(&rc);
+
+	m_tabUnpackDlg->SetWindowPos(&m_tabMain, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	m_tabPackDlg->SetWindowPos(&m_tabMain, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+	m_tabUnpackDlg->ShowWindow(SW_SHOW);
+	m_tabPackDlg->ShowWindow(SW_HIDE);
+
+	// return TRUE  unless you set the focus to a control
+	return TRUE;
+}
+
+void CKOFileUnpackerDlg::OnDestroy()
+{
+	CDialogEx::OnDestroy();
+
+	if (m_tabUnpackDlg)
+	{
+		m_tabUnpackDlg->DestroyWindow();
+		delete m_tabUnpackDlg;
+		m_tabUnpackDlg = nullptr;
+	}
+
+	if (m_tabPackDlg)
+	{
+		m_tabPackDlg->DestroyWindow();
+		delete m_tabPackDlg;
+		m_tabPackDlg = nullptr;
+	}
 }
 
 void CKOFileUnpackerDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -176,227 +219,25 @@ void CKOFileUnpackerDlg::OnHelpAbout()
 	dlgAbout.DoModal();
 }
 
-void CKOFileUnpackerDlg::OnBnClickedButtonSelectHdr()
+void CKOFileUnpackerDlg::OnTcnSelchangeTabPages(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	CFileDialog dlg(
-		TRUE,
-		NULL,
-		NULL,
-		OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST,
-		L"Header Files (*.hdr)|*.hdr|All Files (*.*)|*.*||"
-	);
+	m_tabUnpackDlg->ShowWindow(SW_HIDE);
+	m_tabPackDlg->ShowWindow(SW_HIDE);
 
-	if (dlg.DoModal() == IDOK)
+	int iSelected = m_tabMain.GetCurSel();
+	TRACE("iSelected %d\n", iSelected);
+	switch (iSelected)
 	{
-		CString path = dlg.GetPathName();
-		m_editHdrPath.SetWindowText(path);
-	}
-}
-
-void CKOFileUnpackerDlg::OnBnClickedButtonSelectSrc()
-{
-	CFileDialog dlg(
-		TRUE,
-		NULL,
-		NULL,
-		OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST,
-		L"Source Files (*.src)|*.src|All Files (*.*)|*.*||"
-	);
-
-	if (dlg.DoModal() == IDOK)
-	{
-		CString path = dlg.GetPathName();
-		m_editSrcPath.SetWindowText(path);
-	}
-}
-
-void CKOFileUnpackerDlg::OnBnClickedButtonSelectUnpackPath()
-{
-	CFolderPickerDialog dlg;
-
-	if (dlg.DoModal() == IDOK)
-	{
-		CString path = dlg.GetPathName();
-		m_editUnpackPath.SetWindowText(path);
-	}
-}
-
-void CKOFileUnpackerDlg::OnBnClickedButtonUnpack()
-{
-	m_editHdrPath.GetWindowText(m_strPathHdr);
-	m_editSrcPath.GetWindowText(m_strPathSrc);
-	m_editUnpackPath.GetWindowText(m_strPathUnpack);
-
-	CString strError = L"";
-	if (m_strPathHdr.IsEmpty())
-	{
-		strError += GetText(IDS_WARNING_1) + L"\r\n";
+		case 0:
+			m_tabUnpackDlg->ShowWindow(SW_SHOW);
+			break;
+		case 1:
+			m_tabPackDlg->ShowWindow(SW_SHOW);
+			break;
+		default:
+			m_tabUnpackDlg->ShowWindow(SW_SHOW);
+			break;
 	}
 
-	if (m_strPathSrc.IsEmpty())
-	{
-		strError += GetText(IDS_WARNING_2) + L"\r\n";
-	}
-
-	if (m_strPathUnpack.IsEmpty())
-	{
-		strError += GetText(IDS_WARNING_3) + L"\r\n";
-	}
-
-	if (strError.IsEmpty() == false)
-	{
-		AfxMessageBox(strError, MB_OK);
-		return;
-	}
-
-	// make button unclickable
-	m_btnUnpack.EnableWindow(FALSE);
-	// start thread to avoid UI freeze.
-	AfxBeginThread(UnpackThread, this);
-}
-
-UINT CKOFileUnpackerDlg::UnpackThread(LPVOID pParam)
-{
-	CKOFileUnpackerDlg* pDlg = (CKOFileUnpackerDlg*) pParam;
-
-	pDlg->ReadHdr();
-	pDlg->Unpack();
-
-	pDlg->PostMessage(WM_USER + 1); // done signal
-
-	return 0;
-}
-
-LRESULT CKOFileUnpackerDlg::OnUnpackDone(WPARAM, LPARAM)
-{
-	m_btnUnpack.EnableWindow(TRUE);
-
-	AfxMessageBox(GetText(IDS_SUCCESS_UNPACK), MB_OK | MB_ICONINFORMATION);
-
-	return 0;
-}
-
-void CKOFileUnpackerDlg::ReadHdr()
-{
-
-	HANDLE hFile = CreateFile(
-		m_strPathHdr,
-		GENERIC_READ,
-		FILE_SHARE_READ,
-		NULL,
-		OPEN_EXISTING,
-		FILE_ATTRIBUTE_NORMAL,
-		NULL
-	);
-
-	if (hFile != INVALID_HANDLE_VALUE)
-	{
-		uint32_t dwHeader = 0;
-		uint32_t dwUnknown = 0;
-		DWORD bytesRead = 0;
-		
-		// read only once
-		ReadFile(hFile, &dwHeader, sizeof(uint32_t), &bytesRead, NULL);
-		ReadFile(hFile, &dwUnknown, sizeof(uint32_t), &bytesRead, NULL);
-
-		while (true)
-		{
-			file_info fileInfo;
-
-			if (!ReadFile(hFile, &fileInfo.wLenFN, sizeof(uint16_t), &bytesRead, NULL)
-				|| bytesRead != sizeof(uint16_t))
-			{
-				break;
-			}
-
-			if (fileInfo.wLenFN > 0)
-			{
-				std::vector<char> buf(fileInfo.wLenFN + 1, 0);
-
-				ReadFile(hFile, buf.data(), fileInfo.wLenFN, &bytesRead, NULL);
-
-				fileInfo.strFN = CString(buf.data());
-			}
-
-			ReadFile(hFile, &fileInfo.dwOffset, sizeof(uint32_t), &bytesRead, NULL);
-			ReadFile(hFile, &fileInfo.dwBytes, sizeof(uint32_t), &bytesRead, NULL);
-
-			m_vecFileInfo.push_back(fileInfo);
-		}
-
-
-		CloseHandle(hFile);
-	}
-
-#ifdef _DEBUG
-	for (const auto& fileInfo : m_vecFileInfo)
-	{
-		TRACE(L"FileName: %s | Len : %hu | Offset : %u | Bytes : %u\n",
-			fileInfo.strFN.GetString(),
-			fileInfo.wLenFN,
-			fileInfo.dwOffset,
-			fileInfo.dwBytes);
-	}
-#endif
-}
-
-void CKOFileUnpackerDlg::Unpack()
-{
-	// progress bar
-	m_progress.ShowWindow(SW_SHOW);
-	m_progress.SetRange(0, (int) m_vecFileInfo.size());
-	m_progress.SetPos(0);
-
-	HANDLE hFile = CreateFile(
-		m_strPathSrc,
-		GENERIC_READ,
-		FILE_SHARE_READ,
-		NULL,
-		OPEN_EXISTING,
-		FILE_ATTRIBUTE_NORMAL,
-		NULL
-	);
-
-	if (hFile == INVALID_HANDLE_VALUE)
-	{
-		DWORD err = GetLastError();
-		CString msg;
-		msg.Format(GetText(IDS_WARNING_4), err);
-		AfxMessageBox(msg);
-		return;
-	}
-
-	DWORD bytesRead = 0;
-
-	int iCount = 0;
-	for (const auto& fileInfo : m_vecFileInfo)
-	{
-		CString strPathOut;
-		strPathOut.Format(L"%s\\%s", m_strPathUnpack, fileInfo.strFN.GetString());
-		HANDLE hOut = CreateFile(
-			strPathOut,
-			GENERIC_WRITE,
-			0,
-			NULL,
-			CREATE_ALWAYS,
-			FILE_ATTRIBUTE_NORMAL,
-			NULL
-		);
-
-		if (hOut == INVALID_HANDLE_VALUE) 
-		{
-			continue;
-		}
-
-		SetFilePointer(hFile, fileInfo.dwOffset, NULL, FILE_BEGIN);
-		std::vector<char> buffer(fileInfo.dwBytes);
-		ReadFile(hFile, buffer.data(), fileInfo.dwBytes, &bytesRead, NULL);
-		DWORD bytesWritten = 0;
-		WriteFile(hOut, buffer.data(), bytesRead, &bytesWritten, NULL);
-		CloseHandle(hOut);
-		m_progress.SetPos(++iCount);
-	}
-
-	m_progress.ShowWindow(SW_HIDE);
-	CloseHandle(hFile);
+	*pResult = 0;
 }
