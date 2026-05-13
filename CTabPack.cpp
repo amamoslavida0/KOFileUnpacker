@@ -17,6 +17,7 @@ CTabPack::CTabPack(CWnd* pParent /*=nullptr*/)
 	m_strPathHdr = L"";
 	m_eFileType = file_type::unknown;
 	m_vecFileNames = {};
+	m_byPackResult = 0;
 }
 
 CTabPack::~CTabPack()
@@ -29,6 +30,7 @@ void CTabPack::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PROGRESS_PACK, m_progressPack);
 	DDX_Control(pDX, IDC_EDIT_PACK_EXTRACT_PATH, m_editPackPath);
 	DDX_Control(pDX, IDC_EDIT_PACK_HDR_PATH, m_editHdrPath);
+	DDX_Control(pDX, IDC_BUTTON_PACK, m_btnPack);
 }
 
 BOOL CTabPack::OnInitDialog()
@@ -44,6 +46,7 @@ BEGIN_MESSAGE_MAP(CTabPack, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_PACK, &CTabPack::OnBnClickedButtonPack)
 	ON_BN_CLICKED(IDC_BUTTON_PACK_SELECT_EXTRACT_PATH, &CTabPack::OnBnClickedButtonPackSelectExtractPath)
 	ON_BN_CLICKED(IDC_BUTTON_PACK_SELECT_HDR, &CTabPack::OnBnClickedButtonPackSelectHdr)
+	ON_MESSAGE(WM_USER + 1, &CTabPack::OnPackDone)
 END_MESSAGE_MAP()
 
 // helper functions
@@ -98,6 +101,11 @@ file_type CTabPack::GetFileType(const CString& strPath)
 
 uint8_t CTabPack::CreateNewSrcFile() 
 {
+	// progress bar
+	m_progressPack.ShowWindow(SW_SHOW);
+	m_progressPack.SetRange(0, (int) m_vecFileNames.size());
+	m_progressPack.SetPos(0);
+
 	// find path
 	CString strPath = L"";
 	m_editPackPath.GetWindowText(strPath);
@@ -120,7 +128,8 @@ uint8_t CTabPack::CreateNewSrcFile()
 
 	DWORD written = 0;
 	BYTE buffer[8192] = {};
-
+	
+	int iCount = 0;
 	for (const auto& filePath : m_vecFileNames)
 	{
 		HANDLE hSplitFile = CreateFile(
@@ -146,9 +155,10 @@ uint8_t CTabPack::CreateNewSrcFile()
 		}
 
 		CloseHandle(hSplitFile);
+		m_progressPack.SetPos(++iCount);
 	}
 
-
+	m_progressPack.ShowWindow(SW_HIDE);
 	CloseHandle(hFile);
 	return 1;
 }
@@ -282,20 +292,50 @@ void CTabPack::GenerateFileNameVector()
 	finder.Close();
 }
 
-uint8_t CTabPack::CreateNewFiles() 
+void CTabPack::CreateNewFiles() 
 {
 	GenerateFileNameVector();
-	uint8_t byResHdr = CreateNewHdrFile();
+	m_byPackResult = CreateNewHdrFile();
 
-	if (byResHdr != 1)
+	if (m_byPackResult != 1)
 	{
-		return byResHdr;
+		return;
 	}
 
-	return CreateNewSrcFile();
+	m_byPackResult = CreateNewSrcFile();
+
+	return;
 }
 
 // CTabPack message handlers
+
+UINT CTabPack::PackThread(LPVOID pParam)
+{
+	CTabPack* pDlg = (CTabPack*) pParam;
+
+	pDlg->CreateNewFiles();
+	pDlg->PostMessage(WM_USER + 1); // done signal
+
+	return 0;
+}
+
+LRESULT CTabPack::OnPackDone(WPARAM, LPARAM)
+{
+	m_btnPack.EnableWindow(TRUE);
+
+	switch (m_byPackResult)
+	{
+	case 1:
+		AfxMessageBox(L".hdr and .src files have been created by success.", 
+			MB_OK | MB_ICONINFORMATION);
+		break;
+	default:
+		AfxMessageBox(L"Something went wrong !", MB_OK);
+		break;
+	}
+
+	return 0;
+}
 
 void CTabPack::OnBnClickedButtonPack()
 {
@@ -305,18 +345,10 @@ void CTabPack::OnBnClickedButtonPack()
 	
 	TRACE(L"eFileType %d\n", m_eFileType);
 
-	uint8_t byResult = CreateNewFiles();
-
-	switch (byResult)
-	{
-	case 1: 
-		AfxMessageBox(L".hdr and .src files have been created by success.", MB_OK);
-		break;
-	default:
-		AfxMessageBox(L"Something went wrong !", MB_OK);
-		break;
-	}
-
+	// make button unclickable
+	m_btnPack.EnableWindow(FALSE);
+	// start thread to avoid UI freeze.
+	AfxBeginThread(PackThread, this);
 }
 
 void CTabPack::OnBnClickedButtonPackSelectExtractPath()
