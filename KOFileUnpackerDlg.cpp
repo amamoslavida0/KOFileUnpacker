@@ -56,10 +56,6 @@ CKOFileUnpackerDlg::CKOFileUnpackerDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_KOFILESEPERATOR_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-
-	m_PathSrc = L"";
-	m_PathHdr = L"";
-	m_PathUnpack = L"";
 	m_tabUnpackDlg = new CTabUnpack;
 	m_tabPackDlg = new CTabPack;
 }

@@ -112,13 +112,8 @@ void CTabUnpack::OnBnClickedButtonSelectUnpackPath()
 void CTabUnpack::OnBnClickedButtonUnpack()
 {
 	m_editHdrPath.GetWindowText(m_strPathHdr);
-	m_pMainDlg->SetHdrPath(m_strPathHdr);
-
 	m_editSrcPath.GetWindowText(m_strPathSrc);
-	m_pMainDlg->SetSrcPath(m_strPathSrc);
-
 	m_editUnpackPath.GetWindowText(m_strPathUnpack);
-	m_pMainDlg->SetUnpackPath(m_strPathUnpack);
 
 
 	CString strError = L"";
