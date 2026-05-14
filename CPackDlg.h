@@ -2,7 +2,7 @@
 #include "afxdialogex.h"
 #include <vector>
 
-// CTabPack dialog
+// CPackDlg dialog
 
 inline const CString FNui = L"ui";
 inline const CString FNsnd = L"snd";
@@ -21,13 +21,13 @@ enum class file_type
 	unknown
 };
 
-class CTabPack : public CDialogEx
+class CPackDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(CTabPack)
+	DECLARE_DYNAMIC(CPackDlg)
 
 public:
-	CTabPack(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~CTabPack();
+	CPackDlg(CWnd* pParent = nullptr);   // standard constructor
+	virtual ~CPackDlg();
 	CEdit m_editPackPath;
 	CEdit m_editHdrPath;
 

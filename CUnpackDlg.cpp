@@ -4,14 +4,14 @@
 #include "pch.h"
 #include "KOFileUnpacker.h"
 #include "afxdialogex.h"
-#include "CTabUnpack.h"
+#include "CUnpackDlg.h"
 
 
-// CTabUnpack dialog
+// CUnpackDlg dialog
 
-IMPLEMENT_DYNAMIC(CTabUnpack, CDialogEx)
+IMPLEMENT_DYNAMIC(CUnpackDlg, CDialogEx)
 
-CTabUnpack::CTabUnpack(CWnd* pParent /*=nullptr*/)
+CUnpackDlg::CUnpackDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_TAB_UNPACK, pParent)
 {
 	m_strPathSrc = L"";
@@ -20,11 +20,11 @@ CTabUnpack::CTabUnpack(CWnd* pParent /*=nullptr*/)
 	m_pMainDlg = nullptr;
 }
 
-CTabUnpack::~CTabUnpack()
+CUnpackDlg::~CUnpackDlg()
 {	
 }
 
-void CTabUnpack::DoDataExchange(CDataExchange* pDX)
+void CUnpackDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_HDR_PATH, m_editHdrPath);
@@ -35,7 +35,7 @@ void CTabUnpack::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BOOL CTabUnpack::OnInitDialog()
+BOOL CUnpackDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -43,7 +43,7 @@ BOOL CTabUnpack::OnInitDialog()
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CTabUnpack::OnDestroy() 
+void CUnpackDlg::OnDestroy()
 {
 	if (m_pMainDlg != nullptr)
 	{
@@ -53,18 +53,18 @@ void CTabUnpack::OnDestroy()
 }
 
 
-BEGIN_MESSAGE_MAP(CTabUnpack, CDialogEx)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_HDR, &CTabUnpack::OnBnClickedButtonSelectHdr)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_SRC, &CTabUnpack::OnBnClickedButtonSelectSrc)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_EXTRACT_PATH, &CTabUnpack::OnBnClickedButtonSelectUnpackPath)
-	ON_BN_CLICKED(IDC_BUTTON_EXTRACT, &CTabUnpack::OnBnClickedButtonUnpack)
-	ON_MESSAGE(WM_USER + 1, &CTabUnpack::OnUnpackDone)
+BEGIN_MESSAGE_MAP(CUnpackDlg, CDialogEx)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_HDR, &CUnpackDlg::OnBnClickedButtonSelectHdr)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_SRC, &CUnpackDlg::OnBnClickedButtonSelectSrc)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_EXTRACT_PATH, &CUnpackDlg::OnBnClickedButtonSelectUnpackPath)
+	ON_BN_CLICKED(IDC_BUTTON_EXTRACT, &CUnpackDlg::OnBnClickedButtonUnpack)
+	ON_MESSAGE(WM_USER + 1, &CUnpackDlg::OnUnpackDone)
 END_MESSAGE_MAP()
 
 
 // CTabUnpack message handlers
 
-void CTabUnpack::OnBnClickedButtonSelectHdr()
+void CUnpackDlg::OnBnClickedButtonSelectHdr()
 {
 	CFileDialog dlg(
 		TRUE,
@@ -81,7 +81,7 @@ void CTabUnpack::OnBnClickedButtonSelectHdr()
 	}
 }
 
-void CTabUnpack::OnBnClickedButtonSelectSrc()
+void CUnpackDlg::OnBnClickedButtonSelectSrc()
 {
 	CFileDialog dlg(
 		TRUE,
@@ -98,7 +98,7 @@ void CTabUnpack::OnBnClickedButtonSelectSrc()
 	}
 }
 
-void CTabUnpack::OnBnClickedButtonSelectUnpackPath()
+void CUnpackDlg::OnBnClickedButtonSelectUnpackPath()
 {
 	CFolderPickerDialog dlg;
 
@@ -109,7 +109,7 @@ void CTabUnpack::OnBnClickedButtonSelectUnpackPath()
 	}
 }
 
-void CTabUnpack::OnBnClickedButtonUnpack()
+void CUnpackDlg::OnBnClickedButtonUnpack()
 {
 	m_editHdrPath.GetWindowText(m_strPathHdr);
 	m_editSrcPath.GetWindowText(m_strPathSrc);
@@ -144,9 +144,9 @@ void CTabUnpack::OnBnClickedButtonUnpack()
 	AfxBeginThread(UnpackThread, this);
 }
 
-UINT CTabUnpack::UnpackThread(LPVOID pParam)
+UINT CUnpackDlg::UnpackThread(LPVOID pParam)
 {
-	CTabUnpack* pDlg = (CTabUnpack*) pParam;
+	CUnpackDlg* pDlg = (CUnpackDlg*) pParam;
 
 	pDlg->ReadHdr();
 	pDlg->Unpack();
@@ -156,7 +156,7 @@ UINT CTabUnpack::UnpackThread(LPVOID pParam)
 	return 0;
 }
 
-LRESULT CTabUnpack::OnUnpackDone(WPARAM, LPARAM)
+LRESULT CUnpackDlg::OnUnpackDone(WPARAM, LPARAM)
 {
 	m_btnUnpack.EnableWindow(TRUE);
 
@@ -165,7 +165,7 @@ LRESULT CTabUnpack::OnUnpackDone(WPARAM, LPARAM)
 	return 0;
 }
 
-void CTabUnpack::ReadHdr()
+void CUnpackDlg::ReadHdr()
 {
 
 	HANDLE hFile = CreateFile(
@@ -229,7 +229,7 @@ void CTabUnpack::ReadHdr()
 #endif
 }
 
-void CTabUnpack::Unpack()
+void CUnpackDlg::Unpack()
 {
 	// progress bar
 	m_progress.ShowWindow(SW_SHOW);

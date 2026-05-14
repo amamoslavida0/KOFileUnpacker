@@ -3,7 +3,7 @@
 #include <vector>
 #include "KOFileUnpackerDlg.h"
 
-// CTabUnpack child dialog to unpack Knight online src files
+// CUnpackDlg child dialog to unpack Knight online src files
 
 struct file_info
 {
@@ -21,14 +21,14 @@ struct file_info
 	}
 };
 
-class CTabUnpack : public CDialogEx
+class CUnpackDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(CTabUnpack)
+	DECLARE_DYNAMIC(CUnpackDlg)
 
 public:
 	CKOFileUnpackerDlg* m_pMainDlg;
-	CTabUnpack(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~CTabUnpack();
+	CUnpackDlg(CWnd* pParent = nullptr);   // standard constructor
+	virtual ~CUnpackDlg();
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME

@@ -33,10 +33,10 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CTabUnpack.h">
+    <ClInclude Include="CUnpackDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CTabPack.h">
+    <ClInclude Include="CPackDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,10 +50,10 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CTabUnpack.cpp">
+    <ClCompile Include="CUnpackDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CTabPack.cpp">
+    <ClCompile Include="CPackDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

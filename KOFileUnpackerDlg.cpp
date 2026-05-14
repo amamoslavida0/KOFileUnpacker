@@ -7,8 +7,8 @@
 #include "KOFileUnpacker.h"
 #include "KOFileUnpackerDlg.h"
 #include "afxdialogex.h"
-#include "CTabUnpack.h"
-#include "CTabPack.h"
+#include "CUnpackDlg.h"
+#include "CPackDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -56,8 +56,8 @@ CKOFileUnpackerDlg::CKOFileUnpackerDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_KOFILESEPERATOR_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	m_tabUnpackDlg = new CTabUnpack;
-	m_tabPackDlg = new CTabPack;
+	m_tabUnpackDlg = new CUnpackDlg;
+	m_tabPackDlg = new CPackDlg;
 }
 
 CKOFileUnpackerDlg::~CKOFileUnpackerDlg()

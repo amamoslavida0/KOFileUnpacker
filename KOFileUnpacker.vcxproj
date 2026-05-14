@@ -188,8 +188,8 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CTabPack.h" />
-    <ClInclude Include="CTabUnpack.h" />
+    <ClInclude Include="CPackDlg.h" />
+    <ClInclude Include="CUnpackDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="KOFileUnpacker.h" />
     <ClInclude Include="KOFileUnpackerDlg.h" />
@@ -198,8 +198,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CTabPack.cpp" />
-    <ClCompile Include="CTabUnpack.cpp" />
+    <ClCompile Include="CPackDlg.cpp" />
+    <ClCompile Include="CUnpackDlg.cpp" />
     <ClCompile Include="KOFileUnpacker.cpp" />
     <ClCompile Include="KOFileUnpackerDlg.cpp" />
     <ClCompile Include="pch.cpp">

@@ -1,17 +1,17 @@
-﻿// CTabPack.cpp : implementation file
+﻿// CPackDlg.cpp : implementation file
 //
 
 #include "pch.h"
 #include "KOFileUnpacker.h"
 #include "afxdialogex.h"
-#include "CTabPack.h"
+#include "CPackDlg.h"
 
 
-// CTabPack dialog
+// CPackDlg dialog
 
-IMPLEMENT_DYNAMIC(CTabPack, CDialogEx)
+IMPLEMENT_DYNAMIC(CPackDlg, CDialogEx)
 
-CTabPack::CTabPack(CWnd* pParent /*=nullptr*/)
+CPackDlg::CPackDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_TAB_PACK, pParent)
 {
 	m_strPathHdr = L"";
@@ -20,11 +20,11 @@ CTabPack::CTabPack(CWnd* pParent /*=nullptr*/)
 	m_byPackResult = 0;
 }
 
-CTabPack::~CTabPack()
+CPackDlg::~CPackDlg()
 {
 }
 
-void CTabPack::DoDataExchange(CDataExchange* pDX)
+void CPackDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PROGRESS_PACK, m_progressPack);
@@ -33,7 +33,7 @@ void CTabPack::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_PACK, m_btnPack);
 }
 
-BOOL CTabPack::OnInitDialog()
+BOOL CPackDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -42,16 +42,16 @@ BOOL CTabPack::OnInitDialog()
 }
 
 
-BEGIN_MESSAGE_MAP(CTabPack, CDialogEx)
-	ON_BN_CLICKED(IDC_BUTTON_PACK, &CTabPack::OnBnClickedButtonPack)
-	ON_BN_CLICKED(IDC_BUTTON_PACK_SELECT_EXTRACT_PATH, &CTabPack::OnBnClickedButtonPackSelectExtractPath)
-	ON_BN_CLICKED(IDC_BUTTON_PACK_SELECT_HDR, &CTabPack::OnBnClickedButtonPackSelectHdr)
-	ON_MESSAGE(WM_USER + 1, &CTabPack::OnPackDone)
+BEGIN_MESSAGE_MAP(CPackDlg, CDialogEx)
+	ON_BN_CLICKED(IDC_BUTTON_PACK, &CPackDlg::OnBnClickedButtonPack)
+	ON_BN_CLICKED(IDC_BUTTON_PACK_SELECT_EXTRACT_PATH, &CPackDlg::OnBnClickedButtonPackSelectExtractPath)
+	ON_BN_CLICKED(IDC_BUTTON_PACK_SELECT_HDR, &CPackDlg::OnBnClickedButtonPackSelectHdr)
+	ON_MESSAGE(WM_USER + 1, &CPackDlg::OnPackDone)
 END_MESSAGE_MAP()
 
 // helper functions
 
-CString CTabPack::GetFileNameFromPath(const CString& strPath)
+CString CPackDlg::GetFileNameFromPath(const CString& strPath)
 {
 	CString strFN = PathFindFileName(strPath);
 	LPTSTR p = strFN.GetBuffer();
@@ -61,12 +61,12 @@ CString CTabPack::GetFileNameFromPath(const CString& strPath)
 	return strFN;
 }
 
-CString CTabPack::GetFileNameWithExtensionFromPath(const CString& strPath)
+CString CPackDlg::GetFileNameWithExtensionFromPath(const CString& strPath)
 {
 	return PathFindFileName(strPath);
 }
 
-file_type CTabPack::GetFileType(const CString& strPath)
+file_type CPackDlg::GetFileType(const CString& strPath)
 {
 	if (strPath.IsEmpty())
 	{
@@ -99,7 +99,7 @@ file_type CTabPack::GetFileType(const CString& strPath)
 	return file_type::unknown;	
 }
 
-uint8_t CTabPack::CreateNewSrcFile() 
+uint8_t CPackDlg::CreateNewSrcFile()
 {
 	// progress bar
 	m_progressPack.ShowWindow(SW_SHOW);
@@ -163,7 +163,7 @@ uint8_t CTabPack::CreateNewSrcFile()
 	return 1;
 }
 
-uint8_t CTabPack::CreateNewHdrFile() 
+uint8_t CPackDlg::CreateNewHdrFile()
 {
 	// find path
 	CString strPath = L"";
@@ -254,7 +254,7 @@ uint8_t CTabPack::CreateNewHdrFile()
 	return 1;
 }
 
-void CTabPack::GenerateFileNameVector() 
+void CPackDlg::GenerateFileNameVector()
 {
 	// find all files inside folder
 	m_vecFileNames.clear();
@@ -292,7 +292,7 @@ void CTabPack::GenerateFileNameVector()
 	finder.Close();
 }
 
-void CTabPack::CreateNewFiles() 
+void CPackDlg::CreateNewFiles()
 {
 	GenerateFileNameVector();
 	m_byPackResult = CreateNewHdrFile();
@@ -309,9 +309,9 @@ void CTabPack::CreateNewFiles()
 
 // CTabPack message handlers
 
-UINT CTabPack::PackThread(LPVOID pParam)
+UINT CPackDlg::PackThread(LPVOID pParam)
 {
-	CTabPack* pDlg = (CTabPack*) pParam;
+	CPackDlg* pDlg = (CPackDlg*) pParam;
 
 	pDlg->CreateNewFiles();
 	pDlg->PostMessage(WM_USER + 1); // done signal
@@ -319,7 +319,7 @@ UINT CTabPack::PackThread(LPVOID pParam)
 	return 0;
 }
 
-LRESULT CTabPack::OnPackDone(WPARAM, LPARAM)
+LRESULT CPackDlg::OnPackDone(WPARAM, LPARAM)
 {
 	m_btnPack.EnableWindow(TRUE);
 
@@ -337,7 +337,7 @@ LRESULT CTabPack::OnPackDone(WPARAM, LPARAM)
 	return 0;
 }
 
-void CTabPack::OnBnClickedButtonPack()
+void CPackDlg::OnBnClickedButtonPack()
 {
 	m_editHdrPath.GetWindowText(m_strPathHdr);
 	
@@ -351,7 +351,7 @@ void CTabPack::OnBnClickedButtonPack()
 	AfxBeginThread(PackThread, this);
 }
 
-void CTabPack::OnBnClickedButtonPackSelectExtractPath()
+void CPackDlg::OnBnClickedButtonPackSelectExtractPath()
 {
 	CFolderPickerDialog dlg;
 
@@ -362,7 +362,7 @@ void CTabPack::OnBnClickedButtonPackSelectExtractPath()
 	}
 }
 
-void CTabPack::OnBnClickedButtonPackSelectHdr()
+void CPackDlg::OnBnClickedButtonPackSelectHdr()
 {
 	CFileDialog dlg(
 		TRUE,

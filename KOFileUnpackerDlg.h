@@ -5,8 +5,8 @@
 #pragma once
 #include <vector>
 
-class CTabPack;
-class CTabUnpack;
+class CPackDlg;
+class CUnpackDlg;
 
 // CKOFileUnpackerDlg dialog
 class CKOFileUnpackerDlg : public CDialogEx
@@ -31,8 +31,8 @@ protected:
 	// tab control
 	CTabCtrl m_tabMain;
 	// tab pages, dialogs
-	CTabUnpack* m_tabUnpackDlg;
-	CTabPack* m_tabPackDlg;
+	CUnpackDlg* m_tabUnpackDlg;
+	CPackDlg* m_tabPackDlg;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
