@@ -148,6 +148,7 @@ UINT CUnpackDlg::UnpackThread(LPVOID pParam)
 {
 	CUnpackDlg* pDlg = (CUnpackDlg*) pParam;
 
+	pDlg->m_vecFileInfo.clear();
 	pDlg->ReadHdr();
 	pDlg->Unpack();
 
